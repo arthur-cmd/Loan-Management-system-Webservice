@@ -30,7 +30,10 @@ public class ServiceImplementation implements CustomerService{
 
     @Override
     public List<CustomerEntity> findAll() {
-        return null;
+
+        List<CustomerEntity>list=new ArrayList<CustomerEntity>();
+        repository.findAll().forEach(e -> list.add(e));
+        return list;
     }
 
     @Override
