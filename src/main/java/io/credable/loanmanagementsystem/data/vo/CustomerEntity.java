@@ -1,6 +1,5 @@
 package io.credable.loanmanagementsystem.data.vo;
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ public class CustomerEntity {
 
     @Id
     @GeneratedValue
-    private long CustomerID;
+    private String CustomerNumber;
 
     private long id;
 
@@ -41,14 +40,19 @@ public class CustomerEntity {
 
     }
 
-    public CustomerEntity(String firstName,String lastName){
-        this.firstName=firstName;
-        this.lastName=lastName;
+    public CustomerEntity(String CustomerNumber,String status){
+        this.CustomerNumber=CustomerNumber;
+        this.status=status;
 
     }
 
-    public long getCustomerID() {
-        return CustomerID;
+    public String getCustomerNumber() {
+        return CustomerNumber;
+    }
+
+    void setCustomerNumber( String CustomerNumber){
+        this.CustomerNumber=CustomerNumber ;
+
     }
 
     public String getCreatedAt() {
