@@ -1,23 +1,22 @@
 package io.credable.loanmanagementsystem.service;
 
 import io.credable.loanmanagementsystem.data.dao.Repository.CustomerRepository;
-import io.credable.loanmanagementsystem.data.vo.CustomerEntity;
+import io.credable.loanmanagementsystem.data.vo.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class CustomerService {
-
-    private final CustomerRepository repository;
+    private  final CustomerRepository repository;
 
     @Autowired
     public CustomerService(CustomerRepository repository) {
-        this.repository = repository;
+
+        this.repository=repository;
+
     }
 
-    public Optional<CustomerEntity> getCustomer(String customerNumber){
+    public Model getCustomer(String customerNumber){
         return repository.findByCustomerNumber(customerNumber);
     }
 
