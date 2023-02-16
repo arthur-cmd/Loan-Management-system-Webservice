@@ -1,56 +1,85 @@
 
 package io.credable.loanmanagementsystem.customerclasses;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "customer", propOrder = {
-    "createdAt",
-    "createdDate",
-    "customerNumber",
-    "dob",
-    "email",
-    "firstName",
-    "gender",
-    "id",
-    "idNumber",
-    "idType",
-    "lastName",
-    "middleName",
-    "mobile",
-    "monthlyIncome",
-    "status",
-    "updatedAt"
+        "createdAt",
+        "createdDate",
+        "customerNumber",
+        "dob",
+        "email",
+        "firstName",
+        "gender",
+        "id",
+        "idNumber",
+        "idType",
+        "lastName",
+        "middleName",
+        "mobile",
+        "monthlyIncome",
+        "status",
+        "updatedAt"
 })
 public class Customer {
 
     @XmlSchemaType(name = "dateTime")
+    @XmlElement(name = "createdAt", namespace = "http://credable.io/cbs/customer")
     protected XMLGregorianCalendar createdAt;
+
+
     @XmlSchemaType(name = "dateTime")
+    @XmlElement(name = "createdDate", namespace = "http://credable.io/cbs/customer")
     protected XMLGregorianCalendar createdDate;
+
+    @XmlElement(name = "customerNumber", namespace = "http://credable.io/cbs/customer")
     protected String customerNumber;
+
     @XmlSchemaType(name = "dateTime")
+    @XmlElement(name = "dob", namespace = "http://credable.io/cbs/customer")
     protected XMLGregorianCalendar dob;
+
+    @XmlElement(name = "email", namespace = "http://credable.io/cbs/customer")
     protected String email;
+
+    @XmlElement(name = "firstName", namespace = "http://credable.io/cbs/customer")
     protected String firstName;
+
+    @XmlElement(name = "gender", namespace = "http://credable.io/cbs/customer")
     @XmlSchemaType(name = "string")
     protected Gender gender;
+
+    @XmlElement(name = "id", namespace = "http://credable.io/cbs/customer")
     protected Long id;
+
+    @XmlElement(name = "idNumber", namespace = "http://credable.io/cbs/customer")
     protected String idNumber;
     @XmlSchemaType(name = "string")
+    @XmlElement(name = "idType", namespace = "http://credable.io/cbs/customer")
     protected IdType idType;
+
+    @XmlElement(name = "lastName", namespace = "http://credable.io/cbs/customer")
     protected String lastName;
+
+    @XmlElement(name = "middleName", namespace = "http://credable.io/cbs/customer")
     protected String middleName;
+
+    @XmlElement(name = "mobile", namespace = "http://credable.io/cbs/customer")
     protected String mobile;
+
+    @XmlElement(name = "monthlyIncome", namespace = "http://credable.io/cbs/customer")
     protected double monthlyIncome;
+
+    @XmlElement(name = "status", namespace = "http://credable.io/cbs/customer")
     @XmlSchemaType(name = "string")
     protected Status status;
+
+
+    @XmlElement(name = "updatedAt", namespace = "http://credable.io/cbs/customer")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar updatedAt;
 
@@ -416,4 +445,25 @@ public class Customer {
         this.updatedAt = value;
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "createdAt=" + createdAt +
+                ", createdDate=" + createdDate +
+                ", customerNumber='" + customerNumber + '\'' +
+                ", dob=" + dob +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", gender=" + gender +
+                ", id=" + id +
+                ", idNumber='" + idNumber + '\'' +
+                ", idType=" + idType +
+                ", lastName='" + lastName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", monthlyIncome=" + monthlyIncome +
+                ", status=" + status +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

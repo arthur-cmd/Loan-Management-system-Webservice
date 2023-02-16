@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/restws")
 public class CustomerController {
     private final CustomerService service;
-
+    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
 
     private SoapClient client;
 
@@ -40,7 +40,7 @@ public class CustomerController {
         return client.getCustomerNumber(customerRequest.getCustomerNumber());
     }
 
-    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
+
 
 
 

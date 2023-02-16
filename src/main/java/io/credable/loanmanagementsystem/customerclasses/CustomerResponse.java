@@ -25,7 +25,7 @@ import jakarta.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomerResponse {
 
-    @XmlElement(name = "customer")
+    @XmlElement(name = "customer", namespace = "http://credable.io/cbs/customer")
     protected Customer customer;
 
     /**
@@ -34,9 +34,9 @@ public class CustomerResponse {
      * @return possible object is
      * {@link Customer }
      */
+    //  @XmlElement(name = "customer", namespace = "http://credable.io/cbs/customer")
     public Customer getCustomer() {
-
-        return this.customer;
+        return customer;
     }
 
     /**
@@ -49,5 +49,4 @@ public class CustomerResponse {
         this.customer = value;
     }
 
-    }
-
+}

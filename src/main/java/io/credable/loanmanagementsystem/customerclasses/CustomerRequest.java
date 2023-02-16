@@ -21,9 +21,7 @@ import jakarta.xml.bind.annotation.*;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-        "customerNumber"
-})
+@XmlType(name = "", propOrder = {"customerNumber"})
 @XmlRootElement(namespace = "http://credable.io/cbs/customer",name = "CustomerRequest")
 public class CustomerRequest {
 
