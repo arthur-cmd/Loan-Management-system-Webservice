@@ -20,11 +20,9 @@ import jakarta.xml.bind.annotation.*;
  * &lt;/complexType>
  * </pre>
  */
+
+@XmlRootElement(namespace = "http://credable.io/cbs/customer",name = "CustomerResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-        "customer"
-})
-@XmlRootElement(namespace = "http://localhost:8080/wsdl/customer",name = "CustomerResponse")
 public class CustomerResponse {
 
     @XmlElement(name = "customer")
@@ -37,7 +35,8 @@ public class CustomerResponse {
      * {@link Customer }
      */
     public Customer getCustomer() {
-        return customer;
+
+        return this.customer;
     }
 
     /**
@@ -50,4 +49,5 @@ public class CustomerResponse {
         this.customer = value;
     }
 
-}
+    }
+

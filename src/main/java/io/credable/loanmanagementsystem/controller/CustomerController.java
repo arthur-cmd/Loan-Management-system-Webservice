@@ -1,28 +1,49 @@
 package io.credable.loanmanagementsystem.controller;
+import io.credable.loanmanagementsystem.Soap.client.SoapClient;
+import io.credable.loanmanagementsystem.Soap.client.WebServiceConfiguration;
+import io.credable.loanmanagementsystem.customerclasses.CustomerRequest;
+import io.credable.loanmanagementsystem.customerclasses.CustomerResponse;
 import io.credable.loanmanagementsystem.data.vo.Model;
 import io.credable.loanmanagementsystem.service.CustomerService;
 //import io.credable.loanmanagementsystem.service.ServiceImplementation;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/restws")
 public class CustomerController {
     private final CustomerService service;
 
+
+    private SoapClient client;
+
+    @Autowired
+    public CustomerController(CustomerService service, SoapClient client) {
+        this.service = service;
+        this.client = client;
+    }
+
+    @GetMapping("{customerNumber}")
+    public CustomerResponse invokeSoapClientToGetCustomerNumber(@PathVariable String customerNumber){
+        CustomerRequest customerRequest = new CustomerRequest();
+        customerRequest.setCustomerNumber(customerRequest.getCustomerNumber());
+        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
+        //CustomerResponse response = client.getCustomerNumber(customerNumber);
+        //client = context.getBean(SoapClient.class);
+        //return response.getCustomer().getCustomerNumber(response);
+        return client.getCustomerNumber(customerRequest.getCustomerNumber());
+    }
+
     private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
 
-     @Autowired
-    public CustomerController(CustomerService service) {
-        this.service = service;
-    }
+
+
 
 
 //    @GetMapping("/customers")

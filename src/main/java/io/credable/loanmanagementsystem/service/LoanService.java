@@ -19,4 +19,6 @@ public class LoanService {
         return Loanrepository.findByCustomerKYC(customerKYC);
     }
 
+
+
 }

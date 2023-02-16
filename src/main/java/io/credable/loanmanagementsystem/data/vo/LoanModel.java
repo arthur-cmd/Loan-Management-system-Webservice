@@ -15,6 +15,8 @@ public class LoanModel {
     @JoinColumn(name = "customer_id")
     private Model customerKYC;
 
+
+
     @Column(name = "amount")
     private double amount;
 

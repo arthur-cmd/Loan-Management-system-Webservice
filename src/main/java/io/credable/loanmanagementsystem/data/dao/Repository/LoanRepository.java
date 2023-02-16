@@ -10,4 +10,5 @@ import io.credable.loanmanagementsystem.data.vo.LoanModel;
 public interface LoanRepository extends JpaRepository<LoanModel,Long> {
 
     LoanModel findByCustomerKYC(Model customerKYC);
+
 }

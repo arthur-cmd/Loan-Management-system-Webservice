@@ -24,10 +24,10 @@ import jakarta.xml.bind.annotation.*;
 @XmlType(name = "", propOrder = {
         "customerNumber"
 })
-@XmlRootElement(namespace = "http://localhost:8080/wsdl/customer",name = "CustomerRequest")
+@XmlRootElement(namespace = "http://credable.io/cbs/customer",name = "CustomerRequest")
 public class CustomerRequest {
 
-    @XmlElement(namespace = "http://localhost:8080/wsdl/customer")
+    @XmlElement(namespace = "http://credable.io/cbs/customer")
     protected String customerNumber;
 
     /**
