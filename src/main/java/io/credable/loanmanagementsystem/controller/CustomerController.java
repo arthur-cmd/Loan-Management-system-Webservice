@@ -9,6 +9,7 @@ import io.credable.loanmanagementsystem.service.CustomerService;
 //import io.credable.loanmanagementsystem.service.ServiceImplementation;
 
 
+import jakarta.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class CustomerController {
 
     private SoapClient client;
 
+    private CustomerResponse response;
+
     @Autowired
     public CustomerController(CustomerService service, SoapClient client) {
         this.service = service;
@@ -36,7 +39,7 @@ public class CustomerController {
 
     @GetMapping  ("{customerNumber}")
     public Customer invokeSoapClientToGetCustomerNumber(@PathVariable String customerNumber){
-        CustomerResponse response = new CustomerResponse();
+        //CustomerResponse response = new CustomerResponse();
         CustomerRequest customerRequest = new CustomerRequest();
         customerRequest.setCustomerNumber(customerRequest.getCustomerNumber());
        // return response.getCustomer();
@@ -50,39 +53,55 @@ public class CustomerController {
 
     @GetMapping("/subscribe/{customerNumber}")
     public ResponseEntity<Object> subscribeCustomer(@PathVariable String customerNumber) {
-        Model existingCustomer = CustomerService.getCustomer(customerNumber);
+
+        Model existingCustomer = service.getCustomer(customerNumber);
         if (existingCustomer != null) {
             // customer found in local database, return the response
             log.info("Customer found in local database with customer number: " + customerNumber);
             return new ResponseEntity<>(Map.of("message", "Customer already subscribed", "response", existingCustomer), HttpStatus.OK);
         } else {
             try {
-                log.info("Customer not found in local database, hit SOAP " + customerNumber);
+                log.info("Customer not found in local database, hit soap webservice" + customerNumber);
                 // customer not found in local database, hit SOAP web service to get customer information
-                CustomerResponse newCustomerResponse = customerSoapClient.getCustomer(customerNumber);
+                CustomerResponse newCustomerResponse = client.getCustomerNumber(customerNumber);
                 if (newCustomerResponse != null && newCustomerResponse.getCustomer() != null) {
                     // customer found in SOAP web service, save to local database
-                    LOGGER.info("Customer found in SOAP web service, save to local database with customer number: " + customerNumber);
-                    CustomerResponse newCustomerKYC = extractAndSaveCustomer(newCustomerResponse, customerNumber);
-                    return new ResponseEntity<>(Map.of("message", "Customer subscribed successfully", "response", newCustomerKYC), HttpStatus.OK);
+                    log.info("Customer found in SOAP web service, save to local database with customer number: " + customerNumber);
+                    Model newCustomer = extractAndSaveCustomer(newCustomerResponse, customerNumber);
+                    return new ResponseEntity<>(Map.of("message", "Customer subscribed successfully", "response", newCustomer), HttpStatus.OK);
                 } else {
                     // customer not found in both local database and SOAP web service
-                    LOGGER.info("Customer with customer number " + customerNumber + " not found.");
+                    log.info("Customer with customer number " + customerNumber + " not found.");
                     return new ResponseEntity<>("Customer with this customer number doesn't exist", HttpStatus.NOT_FOUND);
                 }
             } catch (SOAPFaultException ex) {
                 // handle the SOAP fault exception and return an appropriate response
-                LOGGER.info("Error retrieving customer information of customer with customer number: " + customerNumber);
-                return new ResponseEntity<>("Error retrieving customer information: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                log.info("Error retrieving customer  " + customerNumber);
+                return new ResponseEntity<>("Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
+    private Model extractAndSaveCustomer(CustomerResponse newCustomerResponse, String customerNumber) {
+        Customer customer = response.getCustomer();
+        if (customer != null) {
+            Model newModel = new Model();
+            newModel.setCustomerNumber(customer.getCustomerNumber());
+            newModel.setFirstName(customer.getFirstName());
+            newModel.setMiddleName(customer.getMiddleName());
+            newModel.setLastName(customer.getLastName());
+            newModel.setEmail(customer.getEmail());
+            newModel.setMobile(customer.getMobile());
+            newModel.setMonthlyIncome(customer.getMonthlyIncome());
+            newModel.setIdNumber(customer.getIdNumber());
+            return service.createCustomer(newModel);
+            //return customerKYCService.createCustomerKYC(newCustomerKYC);
+        } else {
+            log.info("No customer information found");
+            return null;
+        }
 
-
-
-
-
+    }
 
 
 //    @GetMapping("/customers")
