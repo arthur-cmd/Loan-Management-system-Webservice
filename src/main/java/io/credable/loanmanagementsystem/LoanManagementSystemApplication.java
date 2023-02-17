@@ -21,7 +21,7 @@ public class LoanManagementSystemApplication {
         CustomerResponse response = client.getCustomerNumber("318411216");
         //System.out.println("response: Customer ID" + response.getCustomer().getId() + "Customer name=" + response.getCustomer().getFirstName() + response.getCustomer().getMiddleName() + response.getCustomer().getLastName() + ", Email=" + response.getCustomer().getEmail() + ",Gender = " + response.getCustomer().getGender() + ",Mobile number = " + response.getCustomer().getMobile() + ",Date of birth = " + response.getCustomer().getDob() + "Identity type = " + response.getCustomer().getIdType() + "Mounthly income = " + response.getCustomer().getMonthlyIncome() + "Updated at=" + response.getCustomer().getUpdatedAt() + " Created Date = " + response.getCustomer().getCreatedDate() + "Status =" + response.getCustomer().getStatus() + " Created at = " + response.getCustomer().getCreatedAt() + "Identity number = " + response.getCustomer().getIdNumber());
 
-        System.out.println("response: the customer details : " + response.getCustomer().getFirstName() + "" + response.getCustomer().getLastName());
+        System.out.println("response: the customer details : " + response.getCustomer());
     }
 
 }

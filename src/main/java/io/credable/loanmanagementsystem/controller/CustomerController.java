@@ -1,6 +1,7 @@
 package io.credable.loanmanagementsystem.controller;
 import io.credable.loanmanagementsystem.Soap.client.SoapClient;
 import io.credable.loanmanagementsystem.Soap.client.WebServiceConfiguration;
+import io.credable.loanmanagementsystem.customerclasses.Customer;
 import io.credable.loanmanagementsystem.customerclasses.CustomerRequest;
 import io.credable.loanmanagementsystem.customerclasses.CustomerResponse;
 import io.credable.loanmanagementsystem.data.vo.Model;
@@ -13,7 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/restws")
@@ -29,16 +34,50 @@ public class CustomerController {
         this.client = client;
     }
 
-    @GetMapping("{customerNumber}")
-    public CustomerResponse invokeSoapClientToGetCustomerNumber(@PathVariable String customerNumber){
+    @GetMapping  ("{customerNumber}")
+    public Customer invokeSoapClientToGetCustomerNumber(@PathVariable String customerNumber){
+        CustomerResponse response = new CustomerResponse();
         CustomerRequest customerRequest = new CustomerRequest();
         customerRequest.setCustomerNumber(customerRequest.getCustomerNumber());
-        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
-        //CustomerResponse response = client.getCustomerNumber(customerNumber);
-        //client = context.getBean(SoapClient.class);
-        //return response.getCustomer().getCustomerNumber(response);
-        return client.getCustomerNumber(customerRequest.getCustomerNumber());
+       // return response.getCustomer();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
+        client = context.getBean(SoapClient.class);
+        response = client.getCustomerNumber(customerNumber);
+
+        return response.getCustomer();
+
     }
+
+    @GetMapping("/subscribe/{customerNumber}")
+    public ResponseEntity<Object> subscribeCustomer(@PathVariable String customerNumber) {
+        Model existingCustomer = CustomerService.getCustomer(customerNumber);
+        if (existingCustomer != null) {
+            // customer found in local database, return the response
+            log.info("Customer found in local database with customer number: " + customerNumber);
+            return new ResponseEntity<>(Map.of("message", "Customer already subscribed", "response", existingCustomer), HttpStatus.OK);
+        } else {
+            try {
+                log.info("Customer not found in local database, hit SOAP " + customerNumber);
+                // customer not found in local database, hit SOAP web service to get customer information
+                CustomerResponse newCustomerResponse = customerSoapClient.getCustomer(customerNumber);
+                if (newCustomerResponse != null && newCustomerResponse.getCustomer() != null) {
+                    // customer found in SOAP web service, save to local database
+                    LOGGER.info("Customer found in SOAP web service, save to local database with customer number: " + customerNumber);
+                    CustomerResponse newCustomerKYC = extractAndSaveCustomer(newCustomerResponse, customerNumber);
+                    return new ResponseEntity<>(Map.of("message", "Customer subscribed successfully", "response", newCustomerKYC), HttpStatus.OK);
+                } else {
+                    // customer not found in both local database and SOAP web service
+                    LOGGER.info("Customer with customer number " + customerNumber + " not found.");
+                    return new ResponseEntity<>("Customer with this customer number doesn't exist", HttpStatus.NOT_FOUND);
+                }
+            } catch (SOAPFaultException ex) {
+                // handle the SOAP fault exception and return an appropriate response
+                LOGGER.info("Error retrieving customer information of customer with customer number: " + customerNumber);
+                return new ResponseEntity<>("Error retrieving customer information: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
 
 
 
