@@ -83,7 +83,7 @@ public class CustomerController {
     }
 
     private Model extractAndSaveCustomer(CustomerResponse newCustomerResponse, String customerNumber) {
-        Customer customer = response.getCustomer();
+        Customer customer = newCustomerResponse.getCustomer();
         if (customer != null) {
             Model newModel = new Model();
             newModel.setCustomerNumber(customer.getCustomerNumber());
