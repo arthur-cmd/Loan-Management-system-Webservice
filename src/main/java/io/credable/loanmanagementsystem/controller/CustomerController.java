@@ -1,5 +1,6 @@
 package io.credable.loanmanagementsystem.controller;
 import io.credable.loanmanagementsystem.Soap.client.SoapClient;
+import io.credable.loanmanagementsystem.Soap.client.TransactionClient;
 import io.credable.loanmanagementsystem.Soap.client.WebServiceConfiguration;
 import io.credable.loanmanagementsystem.customerclasses.Customer;
 import io.credable.loanmanagementsystem.customerclasses.CustomerRequest;
@@ -9,6 +10,9 @@ import io.credable.loanmanagementsystem.service.CustomerService;
 //import io.credable.loanmanagementsystem.service.ServiceImplementation;
 
 
+import io.credable.loanmanagementsystem.transactionclasses.Account;
+import io.credable.loanmanagementsystem.transactionclasses.TransactionsRequest;
+import io.credable.loanmanagementsystem.transactionclasses.TransactionsResponse;
 import jakarta.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +35,37 @@ public class CustomerController {
 
     private CustomerResponse response;
 
+    private TransactionClient Tclient;
+
     @Autowired
-    public CustomerController(CustomerService service, SoapClient client) {
+    public CustomerController(CustomerService service, SoapClient client,TransactionClient Tclient) {
         this.service = service;
         this.client = client;
+        this.Tclient=Tclient;
     }
 
+
+    @GetMapping  ("{customerNumber}")
+    public Account invokeTransactionClientToGetCustomerNumber(@PathVariable String customerNumber){
+        TransactionsResponse Tresponse = new TransactionsResponse();
+        TransactionsRequest transactionRequest = new TransactionsRequest();
+        transactionRequest.setCustomerNumber(transactionRequest.getCustomerNumber());
+         //return response.getCustomer();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
+        Tclient = context.getBean(TransactionClient.class);
+        Tresponse = (TransactionsResponse) Tclient.getTransactions(customerNumber);
+
+        return (Account) Tresponse.getTransactions();
+
+    }
+
+
+
+
+
+
+
+    //mapping customer number from io.credable.customer
     @GetMapping  ("{customerNumber}")
     public Customer invokeSoapClientToGetCustomerNumber(@PathVariable String customerNumber){
         //CustomerResponse response = new CustomerResponse();
@@ -51,6 +80,8 @@ public class CustomerController {
 
     }
 
+
+    //When customer subscribes for lms
     @GetMapping("/subscribe/{customerNumber}")
     public ResponseEntity<Object> subscribeCustomer(@PathVariable String customerNumber) {
 
