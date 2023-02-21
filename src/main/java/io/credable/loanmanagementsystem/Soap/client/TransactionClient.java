@@ -19,10 +19,9 @@ public class TransactionClient extends WebServiceGatewaySupport{
         Trequest.setCustomerNumber(customerNumber);
         log.info(("request information for" + customerNumber));
         TransactionsResponse Tresponse = new TransactionsResponse();
-        Tresponse= (TransactionsResponse) getWebServiceTemplate().marshalSendAndReceive("http://trxapitest.credable.io:/service/transaction-data", Trequest);
-        List<TransactionData> transactionData =  Tresponse.getTransactions();
+        Tresponse= (TransactionsResponse) getWebServiceTemplate().marshalSendAndReceive("http://trxapitest.credable.io/service/transaction-data", Trequest);
+         return  Tresponse.getTransactions();
 
-        return transactionData;
 
     }
 

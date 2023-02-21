@@ -11,6 +11,7 @@ import io.credable.loanmanagementsystem.service.CustomerService;
 
 
 import io.credable.loanmanagementsystem.transactionclasses.Account;
+import io.credable.loanmanagementsystem.transactionclasses.TransactionData;
 import io.credable.loanmanagementsystem.transactionclasses.TransactionsRequest;
 import io.credable.loanmanagementsystem.transactionclasses.TransactionsResponse;
 import jakarta.xml.ws.soap.SOAPFaultException;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,31 +40,27 @@ public class CustomerController {
     private TransactionClient Tclient;
 
     @Autowired
-    public CustomerController(CustomerService service, SoapClient client,TransactionClient Tclient) {
+    public CustomerController(CustomerService service, SoapClient client) {
         this.service = service;
         this.client = client;
-        this.Tclient=Tclient;
-    }
-
-
-    @GetMapping  ("{customerNumber}")
-    public Account invokeTransactionClientToGetCustomerNumber(@PathVariable String customerNumber){
-        TransactionsResponse Tresponse = new TransactionsResponse();
-        TransactionsRequest transactionRequest = new TransactionsRequest();
-        transactionRequest.setCustomerNumber(transactionRequest.getCustomerNumber());
-         //return response.getCustomer();
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
-        Tclient = context.getBean(TransactionClient.class);
-        Tresponse = (TransactionsResponse) Tclient.getTransactions(customerNumber);
-
-        return (Account) Tresponse.getTransactions();
 
     }
 
 
-
-
-
+    //mapping from the transaction soap
+//    @GetMapping  ("{customerNumber}")
+//    public List<TransactionData> invokeTransactionClientToGetCustomerNumber(@PathVariable String customerNumber){
+//        TransactionsResponse Tresponse = new TransactionsResponse();
+//       TransactionsRequest transactionRequest = new TransactionsRequest();
+//
+//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
+//        Tclient = context.getBean(TransactionClient.class);
+//        List<TransactionData> transactionData = Tclient.getTransactions(customerNumber);
+//        return transactionData;
+//
+//
+//
+//    }
 
 
     //mapping customer number from io.credable.customer
