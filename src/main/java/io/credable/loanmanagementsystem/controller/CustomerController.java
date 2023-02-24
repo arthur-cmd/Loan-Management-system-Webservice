@@ -1,6 +1,5 @@
 package io.credable.loanmanagementsystem.controller;
 import io.credable.loanmanagementsystem.Soap.client.SoapClient;
-import io.credable.loanmanagementsystem.Soap.client.TransactionClient;
 import io.credable.loanmanagementsystem.Soap.client.WebServiceConfiguration;
 import io.credable.loanmanagementsystem.customerclasses.Customer;
 import io.credable.loanmanagementsystem.customerclasses.CustomerRequest;
@@ -20,10 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class CustomerController {
 
     private CustomerResponse response;
 
-    private TransactionClient Tclient;
+
 
     @Autowired
     public CustomerController(CustomerService service, SoapClient client) {
@@ -47,20 +48,7 @@ public class CustomerController {
     }
 
 
-    //mapping from the transaction soap
-//    @GetMapping  ("{customerNumber}")
-//    public List<TransactionData> invokeTransactionClientToGetCustomerNumber(@PathVariable String customerNumber){
-//        TransactionsResponse Tresponse = new TransactionsResponse();
-//       TransactionsRequest transactionRequest = new TransactionsRequest();
-//
-//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WebServiceConfiguration.class);
-//        Tclient = context.getBean(TransactionClient.class);
-//        List<TransactionData> transactionData = Tclient.getTransactions(customerNumber);
-//        return transactionData;
-//
-//
-//
-//    }
+
 
 
     //mapping customer number from io.credable.customer
