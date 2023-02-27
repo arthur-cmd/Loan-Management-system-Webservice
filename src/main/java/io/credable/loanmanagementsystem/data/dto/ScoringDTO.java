@@ -13,7 +13,7 @@ public class ScoringDTO {
     int  id;
     String CustomerNumber;
     int score;
-    int limitAmount;
+    Double limitAmount;
     String exclusion;
     String exclusionReason;
 

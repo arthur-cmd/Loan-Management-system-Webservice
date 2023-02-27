@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.credable.loanmanagementsystem.service.CustomerService;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,53 +20,66 @@ public class QueryLoan {
     private  CustomerService service;
 
 
-    private String ClientToken;
-
-
-
 
     RestTemplate restTemplate = new RestTemplate();
 
-    public ResponseEntity<String> createClientToken () throws JsonProcessingException {
+    public ResponseEntity<String> createClientToken ()  {
+        String url = "https://scoringtest.credable.io/api/v1/client/createClient";
         //send request and receive response
-            String url="" ;
-            String name="" ;
-            String username="";
-            String password="" ;
+        String request = "{ "
+                + "\"url\": \"" + "https://54bf-217-29-131-14.eu.ngrok.io/transactionsApi/234774784"+ "\", "
+                +"\"name\": \"" + "loan" + "\", "
+                + "\"username\": \"" + "" + "\", "
+                + "\"password\": \"" + "" + "\""
+                + "}";
             HttpHeaders headers= new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            Map<String, String> request = new HashMap<>();
-            request.put(url,"http://localhost:8080/transactionsApi/234774784");
-            request.put(name,"loan");
-            request.put(username,"");
-            request.put(password,"");
             HttpEntity<Object> requestEntity = new HttpEntity<>(request,headers);
-            URI uri = URI.create("https://scoringtest.credable.io/api/v1/client/createClient");
-            ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, requestEntity, String.class);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode json= objectMapper.readTree(String.valueOf(responseEntity));
-            String token=json.get(String.valueOf(requestEntity)).asText();
+            String link = "https://scoringtest.credable.io/api/v1/client/createClient";
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
-            this.ClientToken=token;
-
-            return null;
+            return ResponseEntity.ok(responseEntity.getBody());
     }
 
-    public ResponseEntity< Object> queryScore (@PathVariable String customerNumber) throws JsonProcessingException {
-        //initiate query
-        createClientToken();
+
+    @SneakyThrows
+    public String createToken(String custumerNumber){
+        ResponseEntity<String> clientToken= createClientToken();
+        String ttoken= clientToken.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(ttoken);
+        String Clienttoken = jsonNode.get("token").asText();
         HttpHeaders headers= new HttpHeaders();
-        headers.set("client",ClientToken);
+        headers.set("client-token",Clienttoken);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        String uri="https://scoringtest.credable.io/api/v1/scoring/initiateQueryScore/" + custumerNumber;
+      //  ResponseEntity<String> response =restTemplate.getForEntity(uri,String.class,request);
+       ResponseEntity<String> response = restTemplate.exchange(uri,HttpMethod.GET,request,String.class);
+
+        String token= response.getBody();
+
+        return token;
+
+
+    }
+
+    @SneakyThrows
+    public ResponseEntity< Object> queryScore (@PathVariable String customerNumber)  {
+
+        ResponseEntity<String> clientToken= createClientToken();
+        String ttoken= clientToken.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(ttoken);
+        String Clienttoken = jsonNode.get("token").asText();
+        HttpHeaders headers= new HttpHeaders();
+        headers.set("client-token",Clienttoken);
         HttpEntity<Object> request = new HttpEntity<>(headers);
-        String uri= "https://scoringtest.credable.io/ap1/vi/scoring/initiateQueryScore" + customerNumber;
-        ResponseEntity<String> response = restTemplate.getForEntity(uri,String.class,request);
 
-        //Query score
-        String tokeni= response.getBody();
+        String token= createToken(customerNumber);
 
-        String uri1= "https://scoringtest.credable.aw3io/ap1/vi/scoring/queryScore/" + tokeni ;
+        String uri= "https://scoringtest.credable.io/api/v1/scoring/queryScore/" + token ;
 
-        ResponseEntity<Object> responsequery=restTemplate.getForEntity(uri1,Object.class,request);
+        ResponseEntity<Object> responsequery=restTemplate.exchange(uri,HttpMethod.GET,request,Object.class);
 
 
         return  ResponseEntity.ok(responsequery.getBody());
@@ -83,4 +97,5 @@ public class QueryLoan {
 //
 //        return   ResponseEntity.ok(responset.getBody());
 //    }
+
 }

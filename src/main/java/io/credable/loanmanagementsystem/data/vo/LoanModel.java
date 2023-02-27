@@ -18,7 +18,10 @@ public class LoanModel {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Model customerKYC;
+    Model customerKYC;
+    private String customerNumber = String.valueOf(customerKYC);
+
+   // String customerNumber = String.valueOf(customerKYC);
 
 
 

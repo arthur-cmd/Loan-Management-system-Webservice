@@ -31,20 +31,20 @@ public class LoanController {
     private static final Logger log = LoggerFactory.getLogger(LoanController.class);
 
     @Autowired
-    public LoanController(LoanService loanservice, QueryLoan queryLoan){
-        this.queryLoan = queryLoan;
+    public LoanController(LoanService loanservice,QueryLoan queryLoan){
 
         this.loanservice= loanservice;
-
+        this.queryLoan=queryLoan;
     }
 
 
-    @GetMapping( "/Customerloan")
-    public ResponseEntity<Object> sendData(@RequestBody String customerNumber) throws JsonProcessingException {
+    @GetMapping( "/queryscore/{customerNumber}")
+    public ResponseEntity<Object> sendData(@PathVariable String customerNumber)  {
 
-        ResponseEntity<Object> response = queryLoan.queryScore(customerNumber);
+       // ResponseEntity<Object> response = queryLoan.queryScore(customerNumber);
+        ResponseEntity<Object> response= queryLoan.queryScore(customerNumber);
         return new ResponseEntity<>(response, HttpStatus.OK);
-//
+
     }
 
 
@@ -126,9 +126,9 @@ public class LoanController {
 //    }
 
     @GetMapping("/loan/{customerKYC}")
-    public LoanModel getLoan(@PathVariable Model customerKYC){
-        LoanModel loan= loanservice.getLoan(customerKYC);
-        log.info("Your loan is" + customerKYC);
+    public LoanModel getLoan(@PathVariable String customerNumber){
+        LoanModel loan= loanservice.getLoan(customerNumber);
+        log.info("Your loan is" + customerNumber);
         if (loan != null){
             return loan;
         }
