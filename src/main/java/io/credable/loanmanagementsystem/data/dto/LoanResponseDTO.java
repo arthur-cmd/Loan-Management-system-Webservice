@@ -18,4 +18,7 @@ public class LoanResponseDTO {
     private String customerNumber;
     private double amount;
     private Loanstatus status;
+
+    public LoanResponseDTO(double amount, String customerNumber, Long id, String loanStatus) {
+    }
 }

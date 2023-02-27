@@ -3,6 +3,7 @@ package io.credable.loanmanagementsystem.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.credable.loanmanagementsystem.data.dto.ScoringDTO;
 import io.credable.loanmanagementsystem.service.CustomerService;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
@@ -64,7 +65,7 @@ public class QueryLoan {
     }
 
     @SneakyThrows
-    public ResponseEntity< Object> queryScore (@PathVariable String customerNumber)  {
+    public ResponseEntity<ScoringDTO> queryScore(@PathVariable String customerNumber)  {
 
         ResponseEntity<String> clientToken= createClientToken();
         String ttoken= clientToken.getBody();
@@ -79,7 +80,7 @@ public class QueryLoan {
 
         String uri= "https://scoringtest.credable.io/api/v1/scoring/queryScore/" + token ;
 
-        ResponseEntity<Object> responsequery=restTemplate.exchange(uri,HttpMethod.GET,request,Object.class);
+        ResponseEntity<ScoringDTO> responsequery=restTemplate.exchange(uri,HttpMethod.GET,request,ScoringDTO.class);
 
 
         return  ResponseEntity.ok(responsequery.getBody());

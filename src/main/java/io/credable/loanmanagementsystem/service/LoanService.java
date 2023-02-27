@@ -9,6 +9,7 @@ import io.credable.loanmanagementsystem.data.vo.LoanModel;
 import io.credable.loanmanagementsystem.data.dao.Repository.LoanRepository;
 import io.credable.loanmanagementsystem.data.vo.Loanstatus;
 import io.credable.loanmanagementsystem.data.vo.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.management.Query;
@@ -22,8 +23,9 @@ public class LoanService {
 
     private QueryLoan queryLoan;
 
-    public LoanService(LoanRepository loanrepository){
+    public LoanService(LoanRepository loanrepository,QueryLoan queryLoan){
         this.Loanrepository = loanrepository;
+        this.queryLoan=queryLoan;
 
     }
 
@@ -32,12 +34,12 @@ public class LoanService {
     }
 
 
-   public LoanModel createLoan(LoanModel loanModel){
+   public LoanModel createLoan(LoanRequestDTO loanRequestDTO){
         LoanModel newloan= new LoanModel();
-        newloan.setCustomerKYC(loanModel.getCustomerKYC());
-        newloan.setAmount(loanModel.getAmount());
-        newloan.setStatus(loanModel.getStatus());
-        newloan.setId(loanModel.getId());
+        newloan.setCustomerNumber(loanRequestDTO.getCustomerNumber());
+        newloan.setAmount(loanRequestDTO.getAmount());
+        newloan.setStatus(loanRequestDTO.getStatus());
+        newloan.setId(loanRequestDTO.getId());
 
        return Loanrepository.save(newloan);
 
@@ -46,29 +48,32 @@ public class LoanService {
 
 
 
-//   public LoanResponseDTO requestLoan(LoanRequestDTO loanrquest) throws JsonProcessingException {
-//
-//        LoanModel loansave= createLoan(loanrquest);
-//
-//       ScoringDTO scoringDTO= queryLoan.queryScore(loanrquest.getCustomerNumber());
-//
-//       String loanStatus;
-//
-//
-//       if(scoringDTO.getLimitAmount() > loan.getAmount()){
-//           loanStatus = String.valueOf(Loanstatus.Succesfull);
-//       }  else if (scoringDTO.getLimitAmount() == loan.getAmount()) {
-//           loanStatus= String.valueOf(Loanstatus.Pending);
-//
-//       }
-//       else {
-//           loanStatus= String.valueOf(Loanstatus.Rejected);
-//       }
+   public  ResponseEntity<LoanResponseDTO> requestLoan(LoanRequestDTO loanrquest) throws JsonProcessingException {
+
+        LoanModel loansave= createLoan(loanrquest);
+
+       ScoringDTO scoringDTO= queryLoan.queryScore(loanrquest.getCustomerNumber());
+
+       String loanStatus;
+
+
+       if(scoringDTO.getLimitAmount() > loan.getAmount()){
+           loanStatus = String.valueOf(Loanstatus.Succesfull);
+       }  else if (scoringDTO.getLimitAmount() == loan.getAmount()) {
+           loanStatus= String.valueOf(Loanstatus.Pending);
+
+       }
+       else {
+           loanStatus= String.valueOf(Loanstatus.Rejected);
+       }
 //         LoanResponseDTO responseDTO = null;
 //                 responseDTO.setAmount(loanrquest.getAmount());
 //                 responseDTO.setCustomerNumber(loanrquest.getCustomerNumber());
 //                 responseDTO.setStatus(Loanstatus.valueOf(loanStatus));
 //                 responseDTO.setId(loanrquest.getId());
-//
-//   }
+
+       LoanResponseDTO responseDTO = new LoanResponseDTO(loanrquest.getAmount(),loanrquest.getCustomerNumber(),loanrquest.getId(),loanStatus);
+       loansave.setCustomerNumber(responseDTO.getCustomerNumber());
+               return ResponseEntity.ok(responseDTO);
+   }
 }

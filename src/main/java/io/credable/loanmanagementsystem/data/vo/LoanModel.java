@@ -16,10 +16,9 @@ public class LoanModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+
     @JoinColumn(name = "customer_id")
-    Model customerKYC;
-    private String customerNumber = String.valueOf(customerKYC);
+    private String customerNumber ;
 
    // String customerNumber = String.valueOf(customerKYC);
 

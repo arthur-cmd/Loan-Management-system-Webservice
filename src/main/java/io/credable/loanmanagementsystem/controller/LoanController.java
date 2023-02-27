@@ -1,12 +1,15 @@
 package io.credable.loanmanagementsystem.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.credable.loanmanagementsystem.data.dto.LoanResponseDTO;
+import io.credable.loanmanagementsystem.data.dto.ScoringDTO;
 import io.credable.loanmanagementsystem.data.vo.LoanModel;
 import io.credable.loanmanagementsystem.data.vo.Model;
 import io.credable.loanmanagementsystem.service.LoanService;
 import io.credable.loanmanagementsystem.data.dto.LoanRequestDTO;
 
 
+import lombok.SneakyThrows;
 import  org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +42,11 @@ public class LoanController {
 
 
     @GetMapping( "/queryscore/{customerNumber}")
-    public ResponseEntity<Object> sendData(@PathVariable String customerNumber)  {
+    public ResponseEntity<ScoringDTO> sendData(@PathVariable String customerNumber)  {
 
        // ResponseEntity<Object> response = queryLoan.queryScore(customerNumber);
-        ResponseEntity<Object> response= queryLoan.queryScore(customerNumber);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ResponseEntity<ScoringDTO> response= queryLoan.queryScore(customerNumber);
+        return  ResponseEntity.ok(response.getBody());
 
     }
 
@@ -51,15 +54,15 @@ public class LoanController {
 
 
 
-    @PostMapping("/token/try")
-    public ResponseEntity<String> myPostMethod(@RequestBody LoanRequestDTO resourceDTO) {
-        String url = "https://scoringtest.credable.io/api/v1/client/createClient"; // URL of the external service to call
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-      //  HttpEntity<LoanResponseDTO> request = new HttpEntity<>(resourceDTO, headers);
-      //  ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+    @SneakyThrows
+    @PostMapping("/customer/loan")
+    public ResponseEntity<LoanResponseDTO> myPostMethod(@RequestBody LoanRequestDTO resourceDTO) {
 
-        return null;
+        ResponseEntity<LoanResponseDTO> response = loanservice.requestLoan(resourceDTO);
+
+        return ResponseEntity.ok(response.getBody());
+
+
     }
 
 
