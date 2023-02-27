@@ -52,15 +52,16 @@ public class LoanService {
 
         LoanModel loansave= createLoan(loanrquest);
 
+
        ScoringDTO scoringDTO= queryLoan.queryScore(loanrquest.getCustomerNumber());
 
        String loanStatus;
 
 
-       if(scoringDTO.getLimitAmount() > loan.getAmount()){
+       if(scoringDTO.getLimitAmount() > loanrquest.getAmount()){
            loanStatus = String.valueOf(Loanstatus.Succesfull);
-       }  else if (scoringDTO.getLimitAmount() == loan.getAmount()) {
-           loanStatus= String.valueOf(Loanstatus.Pending);
+       }  else if (scoringDTO.getLimitAmount() == loanrquest.getAmount()) {
+           loanStatus= String.valueOf(Loanstatus.Succesfull);
 
        }
        else {
@@ -73,7 +74,7 @@ public class LoanService {
 //                 responseDTO.setId(loanrquest.getId());
 
        LoanResponseDTO responseDTO = new LoanResponseDTO(loanrquest.getAmount(),loanrquest.getCustomerNumber(),loanrquest.getId(),loanStatus);
-       loansave.setCustomerNumber(responseDTO.getCustomerNumber());
+       responseDTO.setCustomerNumber(loansave.getCustomerNumber());
                return ResponseEntity.ok(responseDTO);
    }
 }

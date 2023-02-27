@@ -45,8 +45,8 @@ public class LoanController {
     public ResponseEntity<ScoringDTO> sendData(@PathVariable String customerNumber)  {
 
        // ResponseEntity<Object> response = queryLoan.queryScore(customerNumber);
-        ResponseEntity<ScoringDTO> response= queryLoan.queryScore(customerNumber);
-        return  ResponseEntity.ok(response.getBody());
+        ScoringDTO response= queryLoan.queryScore(customerNumber);
+        return  new ResponseEntity<>(response,HttpStatus.OK);
 
     }
 
@@ -54,7 +54,7 @@ public class LoanController {
 
 
 
-    @SneakyThrows
+   @SneakyThrows
     @PostMapping("/customer/loan")
     public ResponseEntity<LoanResponseDTO> myPostMethod(@RequestBody LoanRequestDTO resourceDTO) {
 

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ScoringDTO {
     int  id;
     String CustomerNumber;
-    int score;
+    Double score;
     Double limitAmount;
     String exclusion;
     String exclusionReason;

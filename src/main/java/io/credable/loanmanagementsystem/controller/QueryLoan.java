@@ -1,6 +1,5 @@
 package io.credable.loanmanagementsystem.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.credable.loanmanagementsystem.data.dto.ScoringDTO;
@@ -11,10 +10,6 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-
 @Configuration
 public class QueryLoan {
 
@@ -24,11 +19,11 @@ public class QueryLoan {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    public ResponseEntity<String> createClientToken ()  {
+    public ResponseEntity<String> createClientToken (String customernumber)  {
         String url = "https://scoringtest.credable.io/api/v1/client/createClient";
         //send request and receive response
         String request = "{ "
-                + "\"url\": \"" + "https://54bf-217-29-131-14.eu.ngrok.io/transactionsApi/234774784"+ "\", "
+                + "\"url\": \"" + "https://54bf-217-29-131-14.eu.ngrok.io/transactionsApi/"+customernumber+ "\", "
                 +"\"name\": \"" + "loan" + "\", "
                 + "\"username\": \"" + "" + "\", "
                 + "\"password\": \"" + "" + "\""
@@ -45,7 +40,7 @@ public class QueryLoan {
 
     @SneakyThrows
     public String createToken(String custumerNumber){
-        ResponseEntity<String> clientToken= createClientToken();
+        ResponseEntity<String> clientToken= createClientToken(custumerNumber);
         String ttoken= clientToken.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(ttoken);
@@ -65,9 +60,9 @@ public class QueryLoan {
     }
 
     @SneakyThrows
-    public ResponseEntity<ScoringDTO> queryScore(@PathVariable String customerNumber)  {
+    public ScoringDTO queryScore(@PathVariable String customerNumber)  {
 
-        ResponseEntity<String> clientToken= createClientToken();
+        ResponseEntity<String> clientToken= createClientToken(customerNumber);
         String ttoken= clientToken.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(ttoken);
@@ -81,9 +76,10 @@ public class QueryLoan {
         String uri= "https://scoringtest.credable.io/api/v1/scoring/queryScore/" + token ;
 
         ResponseEntity<ScoringDTO> responsequery=restTemplate.exchange(uri,HttpMethod.GET,request,ScoringDTO.class);
+        ScoringDTO scorereponse= responsequery.getBody();
 
-
-        return  ResponseEntity.ok(responsequery.getBody());
+         return scorereponse;
+       // return  ResponseEntity.ok(responsequery.getBody());
 
 
     }
