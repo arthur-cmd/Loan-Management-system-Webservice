@@ -48,7 +48,7 @@ public class LoanService {
 
 
 
-   public  ResponseEntity<LoanResponseDTO> requestLoan(LoanRequestDTO loanrquest) throws JsonProcessingException {
+   public  ResponseEntity<LoanResponseDTO> requestLoan(LoanRequestDTO loanrquest)  {
 
         LoanModel loansave= createLoan(loanrquest);
 
@@ -57,23 +57,23 @@ public class LoanService {
 
        String loanStatus;
 
+       Double score= scoringDTO.getScore();
+
 
        if(scoringDTO.getLimitAmount() > loanrquest.getAmount()){
            loanStatus = String.valueOf(Loanstatus.Succesfull);
        }  else if (scoringDTO.getLimitAmount() == loanrquest.getAmount()) {
            loanStatus= String.valueOf(Loanstatus.Succesfull);
 
-       }
-       else {
+       } else if (scoringDTO.getLimitAmount() == null) {
+           loanStatus= String.valueOf(Loanstatus.Pending);
+           
+       } else {
            loanStatus= String.valueOf(Loanstatus.Rejected);
        }
-//         LoanResponseDTO responseDTO = null;
-//                 responseDTO.setAmount(loanrquest.getAmount());
-//                 responseDTO.setCustomerNumber(loanrquest.getCustomerNumber());
-//                 responseDTO.setStatus(Loanstatus.valueOf(loanStatus));
-//                 responseDTO.setId(loanrquest.getId());
 
-       LoanResponseDTO responseDTO = new LoanResponseDTO(loanrquest.getAmount(),loanrquest.getCustomerNumber(),loanrquest.getId(),loanStatus);
+
+       LoanResponseDTO responseDTO = new LoanResponseDTO(loanrquest.getAmount(),loanrquest.getCustomerNumber(),loanrquest.getId(),loanStatus,score);
        responseDTO.setCustomerNumber(loansave.getCustomerNumber());
                return ResponseEntity.ok(responseDTO);
    }

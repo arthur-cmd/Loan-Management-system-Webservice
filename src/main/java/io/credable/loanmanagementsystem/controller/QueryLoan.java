@@ -31,7 +31,6 @@ public class QueryLoan {
             HttpHeaders headers= new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<Object> requestEntity = new HttpEntity<>(request,headers);
-            String link = "https://scoringtest.credable.io/api/v1/client/createClient";
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
             return ResponseEntity.ok(responseEntity.getBody());
