@@ -14,12 +14,23 @@ import java.net.URI;
 
 public class LoanResponseDTO {
 
-    private Long id;
+
     private String customerNumber;
     private double amount;
-    private Loanstatus status;
+    private String loanstatus;
 
-    public LoanResponseDTO(double amount, String customerNumber, Long id, String loanStatus,Double score) {
+
+    private Double limited_amount;
+
+
+
+    public LoanResponseDTO(double amount, String customerNumber, String loanStatus,Double limited_amount) {
+        this.amount=amount;
+        this.customerNumber=customerNumber;
+        this.loanstatus=loanStatus;
+
+        this.limited_amount=limited_amount;
+
     }
 
 }

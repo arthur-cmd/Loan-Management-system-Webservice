@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 public class LoanRequestDTO {
 
 
-    private Long id;
+
     private String customerNumber;
     private double amount;
-    private Loanstatus status;
 }
