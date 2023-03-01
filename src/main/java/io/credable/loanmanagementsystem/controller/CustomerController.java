@@ -4,28 +4,21 @@ import io.credable.loanmanagementsystem.Soap.client.WebServiceConfiguration;
 import io.credable.loanmanagementsystem.customerclasses.Customer;
 import io.credable.loanmanagementsystem.customerclasses.CustomerRequest;
 import io.credable.loanmanagementsystem.customerclasses.CustomerResponse;
-import io.credable.loanmanagementsystem.data.vo.Model;
+import io.credable.loanmanagementsystem.data.vo.CustomerModel;
 import io.credable.loanmanagementsystem.service.CustomerService;
 //import io.credable.loanmanagementsystem.service.ServiceImplementation;
 
 
-import io.credable.loanmanagementsystem.transactionclasses.Account;
-import io.credable.loanmanagementsystem.transactionclasses.TransactionData;
-import io.credable.loanmanagementsystem.transactionclasses.TransactionsRequest;
-import io.credable.loanmanagementsystem.transactionclasses.TransactionsResponse;
 import jakarta.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -71,7 +64,7 @@ public class CustomerController {
     @GetMapping("/subscribe/{customerNumber}")
     public ResponseEntity<Object> subscribeCustomer(@PathVariable String customerNumber) {
 
-        Model existingCustomer = service.getCustomer(customerNumber);
+        CustomerModel existingCustomer = service.getCustomer(customerNumber);
         if (existingCustomer != null) {
             // customer found in local database, return the response
             log.info("Customer found in local database with customer number: " + customerNumber);
@@ -84,7 +77,7 @@ public class CustomerController {
                 if (newCustomerResponse != null && newCustomerResponse.getCustomer() != null) {
                     // customer found in SOAP web service, save to local database
                     log.info("Customer found in SOAP web service, save to local database with customer number: " + customerNumber);
-                    Model newCustomer = extractAndSaveCustomer(newCustomerResponse, customerNumber);
+                    CustomerModel newCustomer = extractAndSaveCustomer(newCustomerResponse, customerNumber);
                     return new ResponseEntity<>(Map.of("message", "Customer subscribed successfully", "response", newCustomer), HttpStatus.OK);
                 } else {
                     // customer not found in both local database and SOAP web service
@@ -99,19 +92,19 @@ public class CustomerController {
         }
     }
 
-    private Model extractAndSaveCustomer(CustomerResponse newCustomerResponse, String customerNumber) {
+    private CustomerModel extractAndSaveCustomer(CustomerResponse newCustomerResponse, String customerNumber) {
         Customer customer = newCustomerResponse.getCustomer();
         if (customer != null) {
-            Model newModel = new Model();
-            newModel.setCustomerNumber(customer.getCustomerNumber());
-            newModel.setFirstName(customer.getFirstName());
-            newModel.setMiddleName(customer.getMiddleName());
-            newModel.setLastName(customer.getLastName());
-            newModel.setEmail(customer.getEmail());
-            newModel.setMobile(customer.getMobile());
-            newModel.setMonthlyIncome(customer.getMonthlyIncome());
-            newModel.setIdNumber(customer.getIdNumber());
-            return service.createCustomer(newModel);
+            CustomerModel newCustomerModel = new CustomerModel();
+            newCustomerModel.setCustomerNumber(customer.getCustomerNumber());
+            newCustomerModel.setFirstName(customer.getFirstName());
+            newCustomerModel.setMiddleName(customer.getMiddleName());
+            newCustomerModel.setLastName(customer.getLastName());
+            newCustomerModel.setEmail(customer.getEmail());
+            newCustomerModel.setMobile(customer.getMobile());
+            newCustomerModel.setMonthlyIncome(customer.getMonthlyIncome());
+            newCustomerModel.setIdNumber(customer.getIdNumber());
+            return service.createCustomer(newCustomerModel);
             //return customerKYCService.createCustomerKYC(newCustomerKYC);
         } else {
             log.info("No customer information found");
@@ -135,8 +128,8 @@ public class CustomerController {
 //    }
 
     @GetMapping("/customer/{CustomerNumber}")
-    public Model getCustomer(@PathVariable String CustomerNumber){
-        Model customer = service.getCustomer(CustomerNumber);
+    public CustomerModel getCustomer(@PathVariable String CustomerNumber){
+        CustomerModel customer = service.getCustomer(CustomerNumber);
           log.info("customernumber returned is" + CustomerNumber);
       if (customer != null){
               return customer;

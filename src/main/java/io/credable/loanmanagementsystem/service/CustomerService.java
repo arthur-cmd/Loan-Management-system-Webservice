@@ -1,7 +1,7 @@
 package io.credable.loanmanagementsystem.service;
 
 import io.credable.loanmanagementsystem.data.dao.Repository.CustomerRepository;
-import io.credable.loanmanagementsystem.data.vo.Model;
+import io.credable.loanmanagementsystem.data.vo.CustomerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ public class CustomerService {
 
     }
 
-    public Model getCustomer(String customerNumber){
+    public CustomerModel getCustomer(String customerNumber){
         return repository.findByCustomerNumber(customerNumber);
     }
 
-    public Model createCustomer(Model customer) {
-        Model newCustomerKYC = new Model();
+    public CustomerModel createCustomer(CustomerModel customer) {
+        CustomerModel newCustomerKYC = new CustomerModel();
         newCustomerKYC.setCustomerNumber(customer.getCustomerNumber());
         newCustomerKYC.setFirstName(customer.getFirstName());
         newCustomerKYC.setMiddleName(customer.getMiddleName());

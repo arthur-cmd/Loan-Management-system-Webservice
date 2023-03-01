@@ -1,10 +1,8 @@
 package io.credable.loanmanagementsystem.controller;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.credable.loanmanagementsystem.data.dto.LoanResponseDTO;
 import io.credable.loanmanagementsystem.data.dto.ScoringDTO;
 import io.credable.loanmanagementsystem.data.vo.LoanModel;
-import io.credable.loanmanagementsystem.data.vo.Model;
 import io.credable.loanmanagementsystem.service.LoanService;
 import io.credable.loanmanagementsystem.data.dto.LoanRequestDTO;
 
