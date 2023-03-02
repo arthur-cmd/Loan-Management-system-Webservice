@@ -2,7 +2,9 @@ package io.credable.loanmanagementsystem.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.credable.loanmanagementsystem.data.dto.LoanResponseDTO;
 import io.credable.loanmanagementsystem.data.dto.ScoringDTO;
+import io.credable.loanmanagementsystem.data.vo.CustomerModel;
 import io.credable.loanmanagementsystem.data.vo.LoanModel;
+import io.credable.loanmanagementsystem.service.CustomerService;
 import io.credable.loanmanagementsystem.service.LoanService;
 import io.credable.loanmanagementsystem.data.dto.LoanRequestDTO;
 
@@ -29,13 +31,16 @@ public class LoanController {
    // private RestTemplate restTemplate = new RestTemplate();
 
     private LoanService loanservice;
+
+    private CustomerService customerService;
     private static final Logger log = LoggerFactory.getLogger(LoanController.class);
 
     @Autowired
-    public LoanController(LoanService loanservice,QueryLoan queryLoan){
+    public LoanController(LoanService loanservice,QueryLoan queryLoan,CustomerService customerService){
 
         this.loanservice= loanservice;
         this.queryLoan=queryLoan;
+        this.customerService=customerService;
     }
 
 
@@ -55,14 +60,21 @@ public class LoanController {
    @SneakyThrows
     @PostMapping("/customer/loan")
     public ResponseEntity<LoanResponseDTO> myPostMethod(@RequestBody LoanRequestDTO resourceDTO) {
+       CustomerModel ExistingCustomer = customerService.getCustomer(resourceDTO.getCustomerNumber());
 
-        ResponseEntity<LoanResponseDTO> response = loanservice.requestLoan(resourceDTO);
+       if (ExistingCustomer == null) {
+           log.info("You cant get a loan , make sure you first subscribe customer number " + resourceDTO.getCustomerNumber());
+       } else {
 
-        return ResponseEntity.ok(response.getBody());
+           ResponseEntity<LoanResponseDTO> response = loanservice.requestLoan(resourceDTO);
 
+           return ResponseEntity.ok(response.getBody());
 
-    }
+       }
+       log.info("subscribe first");
 
+       return null;
+   }
 
 
 //        @PostMapping("/token")

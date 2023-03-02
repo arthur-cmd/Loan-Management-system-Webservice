@@ -14,10 +14,14 @@ public class LoanModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long LoanId;
 
 
+    @ManyToOne
     @JoinColumn(name = "customer_id")
+    private CustomerModel customer_id;
+
+
     private String customerNumber ;
 
    // String customerNumber = String.valueOf(customerKYC);

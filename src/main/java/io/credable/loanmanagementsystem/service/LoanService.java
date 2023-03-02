@@ -38,6 +38,7 @@ public class LoanService {
         LoanModel newloan= new LoanModel();
         newloan.setCustomerNumber(loanRequestDTO.getCustomerNumber());
         newloan.setAmount(loanRequestDTO.getAmount());
+        newloan.setCustomer_id(loanRequestDTO.getCustomer_id());
 
        return Loanrepository.save(newloan);
 
@@ -54,9 +55,10 @@ public class LoanService {
         try {
 
             scoringDTO = queryLoan.queryScore(loanrquest.getCustomerNumber());
+            log.info("transaction data are available " + scoringDTO);
         }
         catch (Exception e){
-            throw  new RuntimeException(e);
+            log.info("There is no transaction data " + new RuntimeException(e));
         }
 
        String loanStatus;

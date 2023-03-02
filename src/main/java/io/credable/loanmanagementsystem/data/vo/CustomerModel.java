@@ -1,10 +1,14 @@
 package io.credable.loanmanagementsystem.data.vo;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 @Table(name = "customer")

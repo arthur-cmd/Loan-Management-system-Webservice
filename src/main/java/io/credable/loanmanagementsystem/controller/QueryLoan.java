@@ -28,7 +28,7 @@ public class QueryLoan {
         String url = "https://scoringtest.credable.io/api/v1/client/createClient";
         //send request and receive response
         String request = "{ "
-                + "\"url\": \"" + "https://f20d-41-207-240-14.eu.ngrok.io/transactionsApi/"+customernumber+ "\", "
+                + "\"url\": \"" + "https://af92-41-207-240-14.eu.ngrok.io/transactionsApi/"+customernumber+ "\", "
                 +"\"name\": \"" + "loan" + "\", "
                 + "\"username\": \"" + "" + "\", "
                 + "\"password\": \"" + "" + "\""
@@ -83,13 +83,16 @@ public class QueryLoan {
 
           while (scorereponse== null && retry<maxretries) {
               try{
-              Thread.sleep(30000);
+              Thread.sleep(31000);
 
               ResponseEntity<ScoringDTO> responsequery = restTemplate.exchange(uri, HttpMethod.GET, request, ScoringDTO.class);
+              log.info("the response is " + responsequery);
               scorereponse = responsequery.getBody();
               retry++;}
 
-              catch (Exception e){ throw new RuntimeException(e);}
+              catch (Exception e){
+                  log.info("no transction data retrieved " + new RuntimeException(e));
+                  throw new RuntimeException(e);}
           }
 
 
