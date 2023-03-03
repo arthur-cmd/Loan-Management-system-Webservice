@@ -15,7 +15,7 @@ public class LoanResponseDTO {
     private String loanstatus;
 
 
-    private Double limited_amount;
+    private Double limited_amount_for_loan;
 
 
 
@@ -24,7 +24,7 @@ public class LoanResponseDTO {
         this.customerNumber=customerNumber;
         this.loanstatus=loanStatus;
 
-        this.limited_amount=limited_amount;
+        this.limited_amount_for_loan=limited_amount;
 
     }
 

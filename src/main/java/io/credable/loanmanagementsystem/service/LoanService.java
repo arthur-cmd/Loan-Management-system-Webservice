@@ -50,14 +50,13 @@ public class LoanService {
    public  ResponseEntity<LoanResponseDTO> requestLoan(LoanRequestDTO loanrquest)  {
 
         LoanModel loansave= createLoan(loanrquest);
-        ScoringDTO scoringDTO = queryLoan.queryScore(loanrquest.getCustomerNumber());
-            log.info("transaction data are available " + scoringDTO);
-
+        ScoringDTO scoringDTO = new ScoringDTO();
        String loanStatus;
 
-       Double limited_amount= scoringDTO.getLimitAmount();
+        try{
 
-       try {
+         scoringDTO = queryLoan.queryScore(loanrquest.getCustomerNumber());
+            log.info("transaction data are available " + scoringDTO);
 
            if (scoringDTO.getLimitAmount() >= loanrquest.getAmount()) {
                loanStatus = String.valueOf(Loanstatus.Succesfull);
@@ -67,11 +66,12 @@ public class LoanService {
            } else {
                loanStatus = String.valueOf(Loanstatus.Rejected);
            }
-       } catch (Exception e){
-           log.info("no scoring results beacause of" + e.getMessage());
+       }
+        catch (Exception e){
+           log.info("no scoring results beacause of " + e.getMessage());
            throw new RuntimeException(e);
        }
-
+       Double limited_amount= scoringDTO.getLimitAmount();
        LoanResponseDTO responseDTO = new LoanResponseDTO(loanrquest.getAmount(),loanrquest.getCustomerNumber(),loanStatus,limited_amount);
        responseDTO.setCustomerNumber(loansave.getCustomerNumber());
                return ResponseEntity.ok(responseDTO);

@@ -76,31 +76,33 @@ public class QueryLoan {
         HttpEntity<Object> request = new HttpEntity<>(headers);
 
         String token= createToken(customerNumber);
-        int maxretries = 10;
+        int maxretries = 2;
         int retry= 0;
         String uri= "https://scoringtest.credable.io/api/v1/scoring/queryScore/" + token ;
-        ScoringDTO scorereponse = null;
+        ScoringDTO scorereponse = new ScoringDTO();
 
-          while (scorereponse== null && retry<maxretries) {
+          while (scorereponse.getLimitAmount()== null && retry<maxretries) {
               try{
-              Thread.sleep(35000);
+              Thread.sleep(40000);
 
               ResponseEntity<ScoringDTO> responsequery = restTemplate.exchange(uri, HttpMethod.GET, request, ScoringDTO.class);
               log.info("the response is " + responsequery);
               scorereponse = responsequery.getBody();
+              retry++;
               }
 
               catch (Exception e){
                   log.info("no transction data retrieved " + new RuntimeException(e));
                   throw new RuntimeException(e);}
 
-              retry++;
+
           }
 
 
 
 
         log.info(("the query score result" + scorereponse));
+          Thread.sleep(10000);
          return scorereponse;
        // return  ResponseEntity.ok(responsequery.getBody());
 
