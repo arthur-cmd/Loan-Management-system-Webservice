@@ -50,32 +50,27 @@ public class LoanService {
    public  ResponseEntity<LoanResponseDTO> requestLoan(LoanRequestDTO loanrquest)  {
 
         LoanModel loansave= createLoan(loanrquest);
-        ScoringDTO scoringDTO = null;
-
-        try {
-
-            scoringDTO = queryLoan.queryScore(loanrquest.getCustomerNumber());
+        ScoringDTO scoringDTO = queryLoan.queryScore(loanrquest.getCustomerNumber());
             log.info("transaction data are available " + scoringDTO);
-        }
-        catch (Exception e){
-            log.info("There is no transaction data " + new RuntimeException(e));
-        }
 
        String loanStatus;
 
        Double limited_amount= scoringDTO.getLimitAmount();
 
+       try {
 
-       if(scoringDTO.getLimitAmount() >=loanrquest.getAmount()){
-           loanStatus = String.valueOf(Loanstatus.Succesfull);
-       }  else if (scoringDTO.getLimitAmount() == null) {  //TODO conditional
-           loanStatus= String.valueOf(Loanstatus.Pending);
+           if (scoringDTO.getLimitAmount() >= loanrquest.getAmount()) {
+               loanStatus = String.valueOf(Loanstatus.Succesfull);
+           } else if (scoringDTO.getLimitAmount() == null) {  //TODO conditional
+               loanStatus = String.valueOf(Loanstatus.Pending);
 
+           } else {
+               loanStatus = String.valueOf(Loanstatus.Rejected);
+           }
+       } catch (Exception e){
+           log.info("no scoring results beacause of" + e.getMessage());
+           throw new RuntimeException(e);
        }
-       else {
-           loanStatus= String.valueOf(Loanstatus.Rejected);
-       }
-
 
        LoanResponseDTO responseDTO = new LoanResponseDTO(loanrquest.getAmount(),loanrquest.getCustomerNumber(),loanStatus,limited_amount);
        responseDTO.setCustomerNumber(loansave.getCustomerNumber());

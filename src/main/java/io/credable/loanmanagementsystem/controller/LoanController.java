@@ -59,7 +59,7 @@ public class LoanController {
 
    @SneakyThrows
     @PostMapping("/customer/loan")
-    public ResponseEntity<LoanResponseDTO> myPostMethod(@RequestBody LoanRequestDTO resourceDTO) {
+    public ResponseEntity<Object> myPostMethod(@RequestBody LoanRequestDTO resourceDTO) {
        CustomerModel ExistingCustomer = customerService.getCustomer(resourceDTO.getCustomerNumber());
 
        if (ExistingCustomer == null) {
@@ -71,9 +71,9 @@ public class LoanController {
            return ResponseEntity.ok(response.getBody());
 
        }
-       log.info("subscribe first");
 
-       return null;
+       log.info("subscribe first");
+       return new ResponseEntity<>("You cant get a loan ,please make sure you subscribe your customer number",HttpStatus.NOT_FOUND);
    }
 
 
